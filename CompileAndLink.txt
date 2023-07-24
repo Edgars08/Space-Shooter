@@ -1,0 +1,3 @@
+g++ -I C:\SFML-2.5.1\include -I C:\Users\matlo\Desktop\Code23\Space-Shooter\Header -c AssetManager.cpp StateMachine.cpp Game.cpp InputManager.cpp SplashState.cpp MainMenuState.cpp GameState.cpp SpaceShip.cpp Space.cpp Lasers.cpp Meteors.cpp PointSystem.cpp LifeBars.cpp main.cpp 
+
+g++ AssetManager.o StateMachine.o Game.o InputManager.o SplashState.o MainMenuState.o GameState.o SpaceShip.o Space.o Lasers.o Meteors.o PointSystem.o LifeBars.o main.o -o p -L"C:\SFML-2.5.1\lib" -lsfml-graphics -lsfml-window -lsfml-system
