@@ -4,8 +4,8 @@ namespace Edgars
 {
     LifeBars ::LifeBars(GameDataRef data) : _data(data)
     {
-        this->InitLifeBar(1.0f);
-        this->InitLifeBarBack();
+        this->LifeMax = 100;
+        this->Life = this->LifeMax;
     }
     void LifeBars::InitLifeBar(float percent)
     {
@@ -21,8 +21,31 @@ namespace Edgars
     }
     void LifeBars::UpdateLifeBar(float percent)
     {
-        // this->LifeBar.setSize(sf::Vector2f(percent * 200.0f, LifeBar.getSize().y));
         this->InitLifeBar(percent);
+    }
+
+    void LifeBars::LoseLife()
+    {
+        if (this->Life < 0)
+        {
+            this->Life = 0;
+        }
+        else
+        {
+            this->Life -= LOSE_POINTS;
+        }
+    }
+    void LifeBars::setLife(int _point)
+    {
+        this->Life = _point;
+    }
+    int LifeBars::getLife() const
+    {
+        return Life;
+    }
+    int LifeBars::getLifeMax() const
+    {
+        return LifeMax;
     }
     void LifeBars::DrawLifeBar()
     {

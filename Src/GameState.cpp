@@ -39,6 +39,8 @@ namespace Edgars
         this->InitScore();
 
         lifebar = new LifeBars(_data);
+        lifebar->InitLifeBar(1.0f);
+        lifebar->InitLifeBarBack();
     }
     void GameState::HandleInput()
     {
@@ -89,15 +91,6 @@ namespace Edgars
         pointtext.setFont(fontText);
         pointtext.setCharacterSize(40);
         pointtext.setFillColor(sf::Color::White);
-    }
-    void GameState::UpdateScore()
-    {
-        std::stringstream str;
-        str << _score;
-        // str()- To get and set string object whose content is present in the stream.
-        pointtext.setString(str.str()); // here its the get function
-
-        life_percent = static_cast<float>(pointsystem->getLife() / pointsystem->getLifeMax());
     }
 
     void GameState::CheckMeteorLaserCollisionBig()
@@ -150,7 +143,8 @@ namespace Edgars
             {
                 delete meteorsSmall[i];
                 meteorsSmall.erase(meteorsSmall.begin() + i);
-                this->pointsystem->LoseLife(LOSE_POINTS);
+                // Take care of the bar
+                this->UpdateLifeBars();
             }
         }
     }
@@ -194,7 +188,19 @@ namespace Edgars
         std::cout << "sizeSmall: " << meteorsSmall.size() << std::endl
                   << std::endl;
     }
-
+    void GameState::UpdateLifeBars()
+    {
+        this->lifebar->setLife(this->lifebar->getLife() - 10);
+        this->life_percent = static_cast<float>(lifebar->getLife() / lifebar->getLifeMax());
+        this->lifebar->InitLifeBar(life_percent);
+    }
+    void GameState::UpdateScore()
+    {
+        std::stringstream str;
+        str << _score;
+        // str()- To get and set string object whose content is present in the stream.
+        pointtext.setString(str.str()); // here its the get function
+    }
     void GameState::Update(float dt)
     {
         this->ShootLasers();
@@ -208,7 +214,6 @@ namespace Edgars
         this->CheckMeteorPlayerCollision();
         // this->CheckMeteorLaserCollisionBig();
         this->UpdateScore();
-        this->lifebar->UpdateLifeBar(life_percent);
     }
     void GameState::DrawScore()
     {

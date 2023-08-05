@@ -26,6 +26,7 @@ namespace Edgars
         void InitMeteors();
         void InitScore();
         void UpdateScore();
+        void UpdateLifeBars();
         void CheckMeteorLaserCollisionBig();
         void CheckMeteorLaserCollisionSmall();
         void CheckMeteorPlayerCollision();

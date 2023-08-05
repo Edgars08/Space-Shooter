@@ -15,17 +15,12 @@ namespace Edgars
         PointSystem(GameDataRef data);
         ~PointSystem(){};
         void InitVariables();
-        void LoseLife(int _point);
-        void setLife(int _point);
         int getPoints() const;
-        int getLife() const;
-        int getLifeMax() const;
+       
 
     private:
         GameDataRef _data;
         int points;
-        int LifeMax;
-        int Life;
     };
 }
 #endif
