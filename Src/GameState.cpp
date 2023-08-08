@@ -141,10 +141,11 @@ namespace Edgars
         {
             if (meteorsSmall[i]->getBound().intersects(spaceship->getBound()))
             {
+                // Lose life when you get hit.
+                this->lifebar->LoseLife();
+
                 delete meteorsSmall[i];
                 meteorsSmall.erase(meteorsSmall.begin() + i);
-                // Take care of the bar
-                this->UpdateLifeBars();
             }
         }
     }
@@ -188,12 +189,7 @@ namespace Edgars
         std::cout << "sizeSmall: " << meteorsSmall.size() << std::endl
                   << std::endl;
     }
-    void GameState::UpdateLifeBars()
-    {
-        this->lifebar->setLife(this->lifebar->getLife() - 10);
-        this->life_percent = static_cast<float>(lifebar->getLife() / lifebar->getLifeMax());
-        this->lifebar->InitLifeBar(life_percent);
-    }
+ 
     void GameState::UpdateScore()
     {
         std::stringstream str;
@@ -213,7 +209,9 @@ namespace Edgars
         this->CheckMeteorLaserCollisionSmall();
         this->CheckMeteorPlayerCollision();
         // this->CheckMeteorLaserCollisionBig();
+        this->lifebar->UpdateLifeBar();
         this->UpdateScore();
+   
     }
     void GameState::DrawScore()
     {

@@ -26,7 +26,6 @@ namespace Edgars
         void InitMeteors();
         void InitScore();
         void UpdateScore();
-        void UpdateLifeBars();
         void CheckMeteorLaserCollisionBig();
         void CheckMeteorLaserCollisionSmall();
         void CheckMeteorPlayerCollision();
@@ -42,7 +41,6 @@ namespace Edgars
         sf::Clock clock_1;
         sf::Clock clock_2;
         int _score;
-        float life_percent;
         sf::Text pointtext;
         sf::Font fontText;
 

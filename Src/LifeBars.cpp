@@ -19,9 +19,10 @@ namespace Edgars
         this->LifeBarBack.setSize(sf::Vector2f(200.0f, 20.0f));
         this->LifeBarBack.setFillColor(sf::Color(30, 30, 30, 200));
     }
-    void LifeBars::UpdateLifeBar(float percent)
+    void LifeBars::UpdateLifeBar()
     {
-        this->InitLifeBar(percent);
+        this->life_percent = static_cast<float>(this->getLife()) / this->getLifeMax();
+        this->LifeBar.setSize(sf::Vector2f(life_percent * 200.0f, 20.0f));
     }
 
     void LifeBars::LoseLife()
@@ -32,12 +33,8 @@ namespace Edgars
         }
         else
         {
-            this->Life -= LOSE_POINTS;
+            this->Life -= 10;
         }
-    }
-    void LifeBars::setLife(int _point)
-    {
-        this->Life = _point;
     }
     int LifeBars::getLife() const
     {
@@ -49,7 +46,7 @@ namespace Edgars
     }
     void LifeBars::DrawLifeBar()
     {
-        _data->window.draw(LifeBar);
         _data->window.draw(LifeBarBack);
+        _data->window.draw(LifeBar);
     }
 }

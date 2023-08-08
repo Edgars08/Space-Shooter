@@ -17,9 +17,8 @@ namespace Edgars
         ~LifeBars(){};
         void InitLifeBar(float percent);
         void InitLifeBarBack();
-        void UpdateLifeBar(float percent);
+        void UpdateLifeBar();
         void LoseLife();
-        void setLife(int _point);
         int getLife() const;
         int getLifeMax() const;
         void DrawLifeBar();
@@ -28,6 +27,7 @@ namespace Edgars
         GameDataRef _data;
         int LifeMax;
         int Life;
+        float life_percent;
         sf::RectangleShape LifeBar;
         sf::RectangleShape LifeBarBack;
     };
