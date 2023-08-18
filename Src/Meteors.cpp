@@ -14,8 +14,11 @@ namespace Edgars
         _meteor.setTexture(_data->assets.GetTexture(filename));
         int temp = static_cast<int>(_data->window.getSize().x - _meteor.getGlobalBounds().width);
         _meteor.setPosition(sf::Vector2f(static_cast<float>(rand() % temp), 0.0f - static_cast<float>(rand() % 50) - INITIAL_METEOR_HEIGHT));
-        _meteor.setScale(2.0f, 2.0f);
         direction = sf::Vector2f(0.0f, 1.0f);
+        if (filename == "Meteor4" || filename == "Meteor3")
+        {
+            _meteor.setScale(2.0f, 2.0f);
+        }
     }
     void Meteors::UpdateMeteor(float dt)
     {

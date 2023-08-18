@@ -28,10 +28,13 @@ namespace Edgars
         void UpdateScore();
         void CheckMeteorLaserCollisionBig();
         void CheckMeteorLaserCollisionSmall();
-        void CheckMeteorPlayerCollision();
+        void CheckMeteorPlayerCollisionSmall();
+        void CheckMeteorPlayerCollisionBig();
         void UpdateLaser(float dt);
-        void UpdateMeteors(float dt);
+        void UpdateMeteorsSmall(float dt);
+        void UpdateMeteorsBig(float dt);
         void Update(float dt);
+        bool IsSpaceShipAlive();
         void DrawScore();
         void Draw(float dt);
 

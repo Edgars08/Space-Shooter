@@ -33,7 +33,7 @@ namespace Edgars
         }
         else
         {
-            this->Life -= 10;
+            this->Life -= LOSE_POINTS;
         }
     }
     int LifeBars::getLife() const

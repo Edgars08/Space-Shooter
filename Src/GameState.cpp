@@ -13,11 +13,11 @@ namespace Edgars
         {
             delete i;
         }
-        for (auto *i : meteorsBig)
+        for (auto *i : meteorsSmall)
         {
             delete i;
         }
-        for (auto *i : meteorsSmall)
+        for (auto *i : meteorsBig)
         {
             delete i;
         }
@@ -69,16 +69,16 @@ namespace Edgars
     {
         if (this->clock_1.getElapsedTime().asSeconds() > METEOR_SPAWNTIME_1)
         {
-            // FOR BIG METEORS
-            meteorsBig.push_back((new Meteors(_data, "Meteor1", METEOR_1_FILEPATH)));
-            meteorsBig.push_back((new Meteors(_data, "Meteor2", METEOR_2_FILEPATH)));
+            // FOR SMALL METEORS
+            meteorsSmall.push_back((new Meteors(_data, "Meteor3", METEOR_3_FILEPATH)));
+            meteorsSmall.push_back((new Meteors(_data, "Meteor4", METEOR_4_FILEPATH)));
             this->clock_1.restart();
         }
         if (this->clock_2.getElapsedTime().asSeconds() > METEOR_SPAWNTIME_2)
         {
-            // FOR SMALL METEORS
-            meteorsSmall.push_back((new Meteors(_data, "Meteor3", METEOR_3_FILEPATH)));
-            meteorsSmall.push_back((new Meteors(_data, "Meteor4", METEOR_4_FILEPATH)));
+            // FOR BIG METEORS
+            meteorsBig.push_back((new Meteors(_data, "Meteor1", METEOR_1_FILEPATH)));
+            meteorsBig.push_back((new Meteors(_data, "Meteor2", METEOR_2_FILEPATH)));
             this->clock_2.restart();
         }
     }
@@ -93,25 +93,6 @@ namespace Edgars
         pointtext.setFillColor(sf::Color::White);
     }
 
-    void GameState::CheckMeteorLaserCollisionBig()
-    {
-        // FOR BIG METEOR
-        for (unsigned int i = 0; i < meteorsBig.size(); ++i)
-        {
-            bool meteor_deleted = false;
-            for (unsigned int k = 0; k < lasers.size() && meteor_deleted == false; ++k)
-            {
-                if (lasers[k]->getBound().intersects(meteorsBig[i]->getBound()))
-                {
-                    delete meteorsBig[i];
-                    delete lasers[k];
-                    lasers.erase(lasers.begin() + k);
-                    meteorsBig.erase(meteorsBig.begin() + i);
-                    meteor_deleted = true;
-                }
-            }
-        }
-    }
     void GameState::CheckMeteorLaserCollisionSmall()
     {
         // FOR SMALL METEOR
@@ -135,7 +116,30 @@ namespace Edgars
             }
         }
     }
-    void GameState::CheckMeteorPlayerCollision()
+    void GameState::CheckMeteorLaserCollisionBig()
+    {
+        // FOR BIG METEOR
+        for (unsigned int i = 0; i < meteorsBig.size(); ++i)
+        {
+            bool meteor_removed = false;
+
+            for (unsigned int k = 0; k < lasers.size() && meteor_removed == false; ++k)
+            {
+                if (lasers[k]->getBound().intersects(meteorsBig[i]->getBound()))
+                {
+                    // delete the enemie
+                    delete meteorsBig[i];
+                    delete lasers[k];
+                    // delete pointer at that enemy i think
+                    lasers.erase(lasers.begin() + k);
+                    meteorsBig.erase(meteorsBig.begin() + i);
+                    meteor_removed = true;
+                    this->_score += this->pointsystem->getPoints();
+                }
+            }
+        }
+    }
+    void GameState::CheckMeteorPlayerCollisionSmall()
     {
         for (unsigned int i = 0; i < meteorsSmall.size(); i++)
         {
@@ -146,6 +150,21 @@ namespace Edgars
 
                 delete meteorsSmall[i];
                 meteorsSmall.erase(meteorsSmall.begin() + i);
+            }
+        }
+    }
+
+    void GameState::CheckMeteorPlayerCollisionBig()
+    {
+        for (unsigned int i = 0; i < meteorsBig.size(); i++)
+        {
+            if (meteorsBig[i]->getBound().intersects(spaceship->getBound()))
+            {
+                // Lose life when you get hit.
+                this->lifebar->LoseLife();
+
+                delete meteorsBig[i];
+                meteorsBig.erase(meteorsBig.begin() + i);
             }
         }
     }
@@ -162,8 +181,22 @@ namespace Edgars
         }
         std::cout << "sizeLaser: " << lasers.size() << std::endl;
     }
-
-    void GameState::UpdateMeteors(float dt)
+    void GameState::UpdateMeteorsSmall(float dt)
+    {
+        // FOR SMALL METEORS
+        for (unsigned int counter = 0; counter < meteorsSmall.size(); counter++)
+        {
+            this->meteorsSmall[counter]->UpdateMeteor(dt);
+            if (meteorsSmall[counter]->getBound().top > _data->window.getSize().y)
+            {
+                delete meteorsSmall[counter];
+                meteorsSmall.erase(meteorsSmall.begin() + counter);
+            }
+        }
+        std::cout << "sizeSmall: " << meteorsSmall.size() << std::endl
+                  << std::endl;
+    }
+    void GameState::UpdateMeteorsBig(float dt)
     {
         // FOR BIG METEORS
         for (unsigned int counter = 0; counter < meteorsBig.size(); counter++)
@@ -175,21 +208,9 @@ namespace Edgars
                 meteorsBig.erase(meteorsBig.begin() + counter);
             }
         }
-        std::cout << "sizeBig: " << meteorsBig.size() << std::endl;
-        // FOR SMALL METEORS
-        for (unsigned int counter = 0; counter < meteorsSmall.size(); counter++)
-        {
-            this->meteorsSmall[counter]->UpdateMeteor(dt);
-            if (meteorsBig[counter]->getBound().top > _data->window.getSize().y)
-            {
-                delete meteorsSmall[counter];
-                meteorsSmall.erase(meteorsSmall.begin() + counter);
-            }
-        }
-        std::cout << "sizeSmall: " << meteorsSmall.size() << std::endl
+        std::cout << "sizeBig: " << meteorsBig.size() << std::endl
                   << std::endl;
     }
- 
     void GameState::UpdateScore()
     {
         std::stringstream str;
@@ -205,13 +226,25 @@ namespace Edgars
         spaceship->MoveSpaceShip(dt);
         spaceship->CheckWindowCollision();
         this->UpdateLaser(dt);
-        this->UpdateMeteors(dt);
+        this->UpdateMeteorsSmall(dt);
+        this->UpdateMeteorsBig(dt); //
         this->CheckMeteorLaserCollisionSmall();
-        this->CheckMeteorPlayerCollision();
-        // this->CheckMeteorLaserCollisionBig();
+        this->CheckMeteorLaserCollisionBig(); //
+        this->CheckMeteorPlayerCollisionSmall();
+        this->CheckMeteorPlayerCollisionBig();
         this->lifebar->UpdateLifeBar();
         this->UpdateScore();
-   
+    }
+    bool GameState::IsSpaceShipAlive()
+    {
+        if(this->lifebar->getLife() <= 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     void GameState::DrawScore()
     {
@@ -226,13 +259,13 @@ namespace Edgars
         {
             laser->DrawLasers();
         }
-        /*       for (auto *Big_m : meteorsBig)
-               {
-                   Big_m->DrawMeteors();
-               }*/
         for (auto *Small_m : meteorsSmall)
         {
             Small_m->DrawMeteors();
+        }
+        for (auto *Big_m : meteorsBig)
+        {
+            Big_m->DrawMeteors();
         }
         this->DrawScore();
         this->lifebar->DrawLifeBar();
